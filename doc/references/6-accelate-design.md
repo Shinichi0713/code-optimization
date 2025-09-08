@@ -49,6 +49,14 @@ C++で書いた処理を **「高速化のためにCPUとFPGAに振り分ける�
    * 通常の制御コードはCPUが処理。
    * 計算集約部分はFPGAへデータを送って処理してもらう。
 
+> FPGA向きの処理：並列性が高い処理
+>
+> 使っている開発ツール次第でどのように高速化できるか変化する
+>
+> FPGA側処理はIPコアとして実装
+>
+> C/C++は制御コードとしてCPUが処理
+
 ---
 
 ### (C) コード例（イメージ）
@@ -92,6 +100,12 @@ void process_data(std::vector<int>& data) {
 }
 ```
 
+> c++コードを書ききる。
+>
+> #pragma HLS PIPELINEによりHLSツールで合成可能とする
+>
+> FPGAに処理をオフロード
+
 ---
 
 ## 3. ポイント
@@ -100,8 +114,9 @@ void process_data(std::vector<int>& data) {
 * **FPGAは並列処理・パイプライン処理が得意** → 演算部分を切り出すのが効果的
 * **CPUは制御中心にする** → 役割分担を明確にする
 
----
-
+> if文のような制御文はCPUに残す
+>
+> 並列化が必要そうな演算部分を切り出すのが効果的
 
 # CNN処理のFPGA化
 
@@ -124,6 +139,9 @@ CNNの推論処理は以下のステージに分けられます。
    * 単純な比較・平均処理。FPGA向きだが、CPUでも十分高速。
 4. **全結合層 (Fully Connected Layer)**
    * 行列積演算（=畳み込みと同じ構造）。FPGAに載せると高速化可能。
+
+> データ並列性が高い→FPGAに最適
+>
 
 ---
 
@@ -233,6 +251,8 @@ CNN推論をFPGAに載せると **演算部分を並列化** できるので劇�
 
 PyTorch → FPGA への流れを整理します👇
 
+> FPGA用ツールチェーン
+
 ---
 
 ## 1. PyTorch → FPGA推論の一般的な流れ
@@ -338,6 +358,8 @@ torch.onnx.export(model, dummy_input, "cnn_model.onnx",
                   opset_version=11)
 ```
 
+> ONNX変換はtorchのメソッドを利用することで実現
+
 ---
 
 ### 3. Vitis AI コンパイル
@@ -364,6 +386,7 @@ torch.onnx.export(model, dummy_input, "cnn_model.onnx",
    ```
 
    → `.xmodel` が生成され、FPGAで動作可能に。
+
 
 ---
 
