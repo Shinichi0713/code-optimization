@@ -7,3 +7,8 @@ especially, it's important
 - what is the feature of hardware
 - what is the feature of software
 - how can we optimize the implements and make the motion quickly.
+
+
+## What is "Trend"?
+
+[Google トレンド](https://trends.google.co.jp/trends/)

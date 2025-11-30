@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket Client</title>
+</head>
+<body>
+  <h1>現在のページ</h1>
+  <p id="status">WebSocket 未接続</p>
+
+  <script>
+    // WebSocket に接続
+    const ws = new WebSocket("ws://localhost:8081");
+
+    ws.onopen = () => {
+      document.getElementById("status").innerText = "WebSocket 接続済み";
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "change_url") {
+        console.log("URL変更指示を受信:", data.url);
+        window.location.href = data.url; // ← ここで画面が切り替わる
+      }
+    };
+
+    ws.onerror = (err) => {
+      console.error("WebSocket error:", err);
+    };
+  </script>
+</body>
+</html>
